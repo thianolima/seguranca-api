@@ -1,0 +1,58 @@
+package br.com.teltelecom.api.seguranca.filter;
+
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import br.com.teltelecom.api.seguranca.entity.Usuario;
+import br.com.teltelecom.api.seguranca.util.JwtUtil;
+
+public class AutenticacaoFilter extends AbstractAuthenticationProcessingFilter {	
+
+	private String login;
+	private String senha;
+	
+	public AutenticacaoFilter(String url, AuthenticationManager authManager) {
+		super(new AntPathRequestMatcher(url));
+		setAuthenticationManager(authManager);
+	}
+
+
+	@Override
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+			throws AuthenticationException, IOException, ServletException {
+						
+		Usuario usuario = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
+		
+		this.login = usuario.getLogin();
+		this.senha = usuario.getSenha();
+		
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(this.login, this.senha);
+		Authentication auth = this.getAuthenticationManager().authenticate(token); 
+		
+		return auth;	
+	}		
+	
+	
+	@Override
+	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, 
+			FilterChain chain, Authentication auth) throws IOException, ServletException {
+
+		String token = JwtUtil.getToken(this.login, this.senha);
+		
+		response.setHeader(JwtUtil.HEADER_STRING, token);
+		response.getWriter().write(token);
+	}
+}
