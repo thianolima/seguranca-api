@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,7 +37,7 @@ public class AutenticacaoFilter extends AbstractAuthenticationProcessingFilter {
 			throws AuthenticationException, IOException, ServletException {
 						
 		Usuario usuario = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
-		
+	
 		this.login = usuario.getLogin();
 		this.senha = usuario.getSenha();
 		
@@ -49,10 +51,21 @@ public class AutenticacaoFilter extends AbstractAuthenticationProcessingFilter {
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, 
 			FilterChain chain, Authentication auth) throws IOException, ServletException {
-
-		String token = JwtUtil.getToken(this.login, this.senha);
 		
+		String token = JwtUtil.getToken(this.login, this.senha);
+				
+		response.setStatus(HttpStatus.OK.value());
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding("UTF-8");
+
+		// TODO:Preciso analisar porque esse objeto nao funciona
+		//JSONObject jsonResponse = new JSONObject(token);			
+		//jsonResponse.put("token", token);
+			
+		String json = "{\"token\":\""+token+"\"}";
+		response.getWriter().write(json);
 		response.setHeader(JwtUtil.HEADER_STRING, token);
-		response.getWriter().write(token);
+			
+
 	}
 }
