@@ -41,6 +41,6 @@ insert into grupo_acao(idgrupo, idacao) values (1,16);
 insert into grupo(id, nome, descricao, ativo) values (2,'AUXILIAR ADMINISTRATIVO', 'Perfil voltado para funcionario que exercem essa função e trabalham com os módulos voltados para o setor de operação da empresa como por exemplo: Solicitação de Compras, Força de Trabalho Diário', 'S');
 insert into grupo_acao(idgrupo, idacao) values (2,2);
 
-insert into usuario(id, nome, login, senha, ativo, idgrupo) values (1, 'administrador do sistema', 'admin@admin','123','S',1);
+insert into usuario(id, nome, login, senha, ativo, idgrupo) values (1, 'administrador do sistema', '0102004081','217aGrup0','S',1);
 insert into usuario(id, nome, login, senha, ativo, idgrupo) values (2,'thiano pereira lima', 'thiano','123','S',2);
 

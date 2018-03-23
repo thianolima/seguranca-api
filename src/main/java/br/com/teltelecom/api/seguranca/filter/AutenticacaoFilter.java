@@ -52,8 +52,8 @@ public class AutenticacaoFilter extends AbstractAuthenticationProcessingFilter {
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, 
 			FilterChain chain, Authentication auth) throws IOException, ServletException {
 		
-		String token = JwtUtil.getToken(this.login, this.senha);
-				
+		String token = JwtUtil.getToken(this.login, this.senha);						
+		
 		response.setStatus(HttpStatus.OK.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");
