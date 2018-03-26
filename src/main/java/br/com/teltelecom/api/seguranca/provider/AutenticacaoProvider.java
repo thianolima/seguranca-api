@@ -4,9 +4,7 @@ import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -53,11 +51,13 @@ public class AutenticacaoProvider implements AuthenticationProvider {
 				
 				if(respAD.getStatusCode() != HttpStatus.OK) {
 					throw new AuthenticationCredentialsNotFoundException(respAD.getBody());
-				}	    		    	
+				}
+				
+				usuario = repository.findByLogin(login);
+			
+	    	} else {	    	
+				usuario = repository.findByLoginAndSenha(login, senha);
 			}
-	    	
-		    //usuario = repository.findByLoginAndSenha(login, senha);
-	    	usuario = repository.findByLogin(login);
 		    
 		    if(usuario.getGrupo().getNome().isEmpty()) {
 		        throw new AuthenticationCredentialsNotFoundException("Usuario ou Senha inválido !");
