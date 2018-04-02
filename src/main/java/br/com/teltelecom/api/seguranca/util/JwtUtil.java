@@ -18,10 +18,10 @@ public class JwtUtil {
 	public static String getToken(String login, String senha) {
 		
 		Claims claims = Jwts.claims().setSubject(login);
+		claims.put("data", new Date().toString());		
 		claims.put("senha", senha);
-		claims.put("data", new Date().toString());
 		
-		LocalDateTime ldt = LocalDateTime.now().plusHours(8);//.plusSeconds(20);
+		LocalDateTime ldt = LocalDateTime.now().plusHours(8);/*.plusSeconds(20);*/
 	    Date dataExpiracao = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
 		
 		return Jwts.builder()
@@ -37,17 +37,15 @@ public class JwtUtil {
 			Claims body = Jwts.parser()
 							.setSigningKey(KEY_WORD)
 							.parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
-							.getBody();			
+							.getBody();
 			
 			Usuario usuario = new Usuario();			
 			usuario.setLogin(body.getSubject());
-			usuario.setSenha((String) body.get("senha"));						
+			usuario.setSenha(body.get("senha").toString());
 		
 			return usuario;
 		}catch(Exception e) {
 			throw new RuntimeException("Token inválido, não foi possível realizar conversão");
-		}
-		
-		
+		}	
 	}
 }

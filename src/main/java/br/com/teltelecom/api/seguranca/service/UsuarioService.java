@@ -33,4 +33,8 @@ public class UsuarioService {
 	public Usuario pequisarId(Long id) {
 		return repository.findOne(id);
 	}
+
+	public Usuario pequisarLogin(String login) {
+		return repository.findByLogin(login);
+	}
 }

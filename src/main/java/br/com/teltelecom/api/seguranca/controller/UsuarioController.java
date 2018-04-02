@@ -26,35 +26,42 @@ public class UsuarioController {
 	UsuarioService service;
 	
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_USUARIO_INSERIR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USUARIO_INSERIR')")
 	public ResponseEntity<Usuario> inserir(@RequestBody Usuario usuario) {
 		usuario = service.salvar(usuario);
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuario); 		 
 	}
 	
 	@PutMapping
-	@PreAuthorize("hasAuthority('ROLE_USUARIO_ALTERAR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USUARIO_ALTERAR')")
 	public ResponseEntity<Usuario> alterar(@RequestBody Usuario usuario) {
 		usuario = service.salvar(usuario);
 		return ResponseEntity.status(HttpStatus.OK).body(usuario); 	
 	}
 	
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_USUARIO_EXCLUIR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USUARIO_EXCLUIR')")
 	public void excluir(@PathVariable Long id) {
 		service.excluir(id);
 	}
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_USUARIO_LISTAR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USUARIO_LISTAR')")
 	public List<Usuario> listar() {		
 		return service.listar();
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_USUARIO_PESQUISAR_ID')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USUARIO_PESQUISAR_ID')")
 	public ResponseEntity<Usuario> pequisarId(@PathVariable Long id) {
 		Usuario usuario = service.pequisarId(id);
+		return usuario != null ? ResponseEntity.status(HttpStatus.OK).body(usuario) : ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping("/login/{login}")
+	@PreAuthorize("permitAll")
+	public ResponseEntity<Usuario> pequisarLogin(@PathVariable String login) {
+		Usuario usuario = service.pequisarLogin(login);
 		return usuario != null ? ResponseEntity.status(HttpStatus.OK).body(usuario) : ResponseEntity.noContent().build();
 	}
 }

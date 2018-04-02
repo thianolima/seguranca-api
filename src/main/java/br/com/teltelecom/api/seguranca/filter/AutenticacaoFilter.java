@@ -22,37 +22,31 @@ import br.com.teltelecom.api.seguranca.entity.Usuario;
 import br.com.teltelecom.api.seguranca.util.JwtUtil;
 
 public class AutenticacaoFilter extends AbstractAuthenticationProcessingFilter {	
-
-	private String login;
-	private String senha;
+	
+	private String senha; 
 	
 	public AutenticacaoFilter(String url, AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(url));
 		setAuthenticationManager(authManager);
 	}
 
-
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
 						
 		Usuario usuario = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
-	
-		this.login = usuario.getLogin();
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(usuario.getLogin(), usuario.getSenha());
 		this.senha = usuario.getSenha();
-		
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(this.login, this.senha);
 		Authentication auth = this.getAuthenticationManager().authenticate(token); 
 		
 		return auth;	
-	}		
-	
+	}			
 	
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, 
 			FilterChain chain, Authentication auth) throws IOException, ServletException {
 		
-		String token = JwtUtil.getToken(this.login, this.senha);						
+		String token = JwtUtil.getToken(auth.getName(), this.senha);						
 		
 		response.setStatus(HttpStatus.OK.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -64,8 +58,6 @@ public class AutenticacaoFilter extends AbstractAuthenticationProcessingFilter {
 			
 		String json = "{\"token\":\""+token+"\"}";
 		response.getWriter().write(json);
-		response.setHeader(JwtUtil.HEADER_STRING, token);
-			
-
+		response.setHeader(JwtUtil.HEADER_STRING, token);			
 	}
 }

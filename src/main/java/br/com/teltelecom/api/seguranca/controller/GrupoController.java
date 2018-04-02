@@ -26,33 +26,33 @@ public class GrupoController {
 	GrupoService service;
 	
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_GRUPO_INSERIR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GRUPO_INSERIR')")
 	public ResponseEntity<Grupo> inserir(@RequestBody Grupo grupo) {
 		grupo = service.salvar(grupo);
 		return ResponseEntity.status(HttpStatus.CREATED).body(grupo); 		 
 	}
 	
 	@PutMapping
-	@PreAuthorize("hasAuthority('ROLE_GRUPO_ALTERAR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GRUPO_ALTERAR')")
 	public ResponseEntity<Grupo> alterar(@RequestBody Grupo grupo) {
 		grupo = service.salvar(grupo);
 		return ResponseEntity.status(HttpStatus.OK).body(grupo); 	
 	}
 	
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_GRUPO_EXCLUIR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GRUPO_EXCLUIR')")
 	public void excluir(@PathVariable Long id) {
 		service.excluir(id);
 	}
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_GRUPO_LISTAR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GRUPO_LISTAR')")
 	public List<Grupo> listar() {		
 		return service.listar();
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_GRUPO_PESQUISAR_ID')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GRUPO_PESQUISAR_ID')")
 	public ResponseEntity<Grupo> pequisarId(@PathVariable Long id) {
 		Grupo grupo = service.pequisarId(id);
 		return grupo != null ? ResponseEntity.status(HttpStatus.OK).body(grupo) : ResponseEntity.noContent().build();

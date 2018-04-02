@@ -30,6 +30,9 @@ public class AutenticacaoProvider implements AuthenticationProvider {
 	@Value("${ldap.host}")
 	private String ldapHost;
 	
+	@Value("${ldap.dominio}")
+	private String ldapDominio;
+	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {		
 	    String login = (String) authentication.getPrincipal();
@@ -41,24 +44,28 @@ public class AutenticacaoProvider implements AuthenticationProvider {
 	    	if(Boolean.parseBoolean(ldapEnabled)){
 		    	RestTemplate rest = new RestTemplate();
 		    	
-		    	String params = "{\"username\":\"" + login +"@grupotel.corp\",\"password\" : \"" + senha + "\"}";
-		    	
+		    	String json = "{\"username\":\"" + login + ldapDominio + "\",\"password\" : \"" + senha + "\"}";
+		    			    	
 		    	RequestEntity<String> reqAD = RequestEntity
 		    			.post(URI.create(ldapHost)) 
-		    			.body(params);
+		    			.body(json.toString());
 		    	
-				ResponseEntity<String> respAD= rest.exchange(reqAD, String.class);
+				ResponseEntity<String> respAD = rest.exchange(reqAD, String.class);
 				
+				
+				//Se o usuario estiver invalido no AD
 				if(respAD.getStatusCode() != HttpStatus.OK) {
 					throw new AuthenticationCredentialsNotFoundException(respAD.getBody());
 				}
 				
 				usuario = repository.findByLogin(login);
 			
+			//Se nao tiver ativo o uso de AD ira buscar usuario e senha local
 	    	} else {	    	
 				usuario = repository.findByLoginAndSenha(login, senha);
 			}
 		    
+	    	//Se o usuario nao for encontrado na base local
 		    if(usuario.getGrupo().getNome().isEmpty()) {
 		        throw new AuthenticationCredentialsNotFoundException("Usuario ou Senha inválido !");
 		    }	 

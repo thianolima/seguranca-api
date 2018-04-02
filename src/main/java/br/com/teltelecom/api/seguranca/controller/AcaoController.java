@@ -26,33 +26,33 @@ public class AcaoController {
 	AcaoService service;
 	
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_ACAO_INSERIR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_ACAO_INSERIR')")
 	public ResponseEntity<Acao> inserir(@RequestBody Acao acao) {
 		acao = service.salvar(acao);
 		return ResponseEntity.status(HttpStatus.CREATED).body(acao); 		 
 	}
 	
 	@PutMapping
-	@PreAuthorize("hasAuthority('ROLE_ACAO_ALTERAR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_ACAO_ALTERAR')")
 	public ResponseEntity<Acao> alterar(@RequestBody Acao acao) {
 		acao = service.salvar(acao);
 		return ResponseEntity.status(HttpStatus.OK).body(acao); 	
 	}
 	
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_ACAO_EXCLUIR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_ACAO_EXCLUIR')")
 	public void excluir(@PathVariable Long id) {
 		service.excluir(id);
 	}
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_ACAO_LISTAR')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_ACAO_LISTAR')")
 	public List<Acao> listar() {		
 		return service.listar();
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_ACAO_PESQUISAR_ID')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_ACAO_PESQUISAR_ID')")
 	public ResponseEntity<Acao> pequisarId(@PathVariable Long id) {
 		Acao acao = service.pequisarId(id);
 		return acao != null ? ResponseEntity.status(HttpStatus.OK).body(acao) : ResponseEntity.noContent().build();
