@@ -1,5 +1,4 @@
---PRECISO VER UMA FORMA DE SO PRECISAR PASSAR ESSE ROLE E NAO FICAR ATUALIZADNO O GRUPO NUNCA MAIS
-insert into acao(id, nome, descricao, controller, ativo) values (1,'ROLE_ADMIN','DEUS DO SISTEMA !!!', 'ADMIN', 'S');
+insert into acao(id, nome, descricao, ativo) values (1,'ROLE_ADMIN','DEUS DO SISTEMA !!!', 'S');
 
 insert into acao(id, nome, descricao, controller, ativo) values (2,'ROLE_GRUPO_LISTAR','Acao cadastrada para testes','GrupoController','S');
 insert into acao(id, nome, descricao, controller, ativo) values (3,'ROLE_GRUPO_EXCLUIR','Acao cadastrada para testes','GrupoController','S');
@@ -29,4 +28,4 @@ insert into grupo_acao(idgrupo, idacao) values (2,2);
 
 insert into usuario(id, nome, login, senha, ativo, idgrupo) values (1, 'administrador do sistema', '0102004081','217aGrup0','S',1);
 insert into usuario(id, nome, login, senha, ativo, idgrupo) values (2,'thiano pereira lima', 'thiano','123','S',2);
-
+insert into usuario(id, nome, login, senha, ativo, idgrupo) values (3, 'ricardo', '0102016812','217aGrup0','S',1);
